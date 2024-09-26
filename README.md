@@ -9,8 +9,184 @@ This project is part of my journey to enhance my data analytics skills through C
 
 The first step was to download the [`mintclassicsDB.sql`](./mintclassicsDB.sql) file, which contains the script for creating and populating the Mint Classics relational database. Using the **"Import from Self-Contained File"** option in MySQL Workbench, I imported the script, which created a nine-table relational database.
 
-Here’s a screenshot illustrating the import process:
-
-
 ![Database Import Screenshot](./SupportFiles/MintTClassic_DB_Import.png)
 
+
+The following EER diagram illustrates the structure of the Mint Classics database, which served as a reference for my analysis:
+
+<img src="./SupportFiles/EER_MintClassicsDataModel.png" alt="EER Diagram" width="50%">
+
+### Step 2: Explore the Tables
+
+In this step, I explored the various tables within the Mint Classics database to gather insights. Click the arrow below to expand and view the details of each table.
+
+<details>
+<summary>Expand to see Customers Table</summary>
+
+### Customers Table Description
+
+The `customers` table contains essential information about customers of the Mint Classics Company. Below is a description of each column in the table:
+
+| Column Name               | Data Type       | Description                                                                                      |
+|--------------------------|-----------------|--------------------------------------------------------------------------------------------------|
+| `customerNumber`         | int             | Unique identifier for each customer (Primary Key).                                             |
+| `customerName`           | varchar(50)     | Name of the customer or business.                                                               |
+| `contactLastName`        | varchar(50)     | Last name of the primary contact person for the customer.                                       |
+| `contactFirstName`       | varchar(50)     | First name of the primary contact person for the customer.                                      |
+| `phone`                  | varchar(50)     | Phone number of the customer or their primary contact.                                         |
+| `addressLine1`           | varchar(50)     | Primary address of the customer (e.g., street address).                                        |
+| `addressLine2`           | varchar(50)     | Additional address details (optional).                                                          |
+| `city`                   | varchar(50)     | City where the customer resides.                                                                 |
+| `state`                  | varchar(50)     | State or province where the customer is located (optional).                                    |
+| `postalCode`             | varchar(15)     | Postal code of the customer's address.                                                           |
+| `country`                | varchar(50)     | Country of the customer.                                                                          |
+| `salesRepEmployeeNumber` | int             | Employee number of the sales representative assigned to the customer (Foreign Key).             |
+| `creditLimit`            | decimal(10,2)   | Credit limit assigned to the customer.                                                            |
+
+</details>
+
+<details>
+<summary>Expand to see Employees Table</summary>
+
+### Employees Table Description
+
+The `employees` table contains information about the employees who manage customer relationships and sales within the Mint Classics Company. Below is a description of each column in the table:
+
+| Column Name             | Data Type       | Description                                                                                      |
+|-------------------------|-----------------|--------------------------------------------------------------------------------------------------|
+| `employeeNumber`        | int             | Unique identifier for each employee (Primary Key).                                             |
+| `lastName`              | varchar(50)     | Last name of the employee.                                                                       |
+| `firstName`             | varchar(50)     | First name of the employee.                                                                      |
+| `extension`             | varchar(10)     | Phone extension for the employee.                                                                |
+| `email`                 | varchar(100)    | Email address of the employee.                                                                   |
+| `officeCode`            | varchar(10)     | Identifier for the office where the employee works (Foreign Key).                               |
+| `reportsTo`             | int             | Identifier of the employee's manager (Foreign Key).                                             |
+| `jobTitle`              | varchar(50)     | Job title of the employee.                                                                        |
+
+</details>
+
+<details>
+<summary>Expand to see Offices Table</summary>
+
+### Offices Table Description
+
+The `offices` table contains information about the various office locations of the Mint Classics Company. Below is a description of each column in the table:
+
+| Column Name        | Data Type       | Description                                                                                      |
+|--------------------|-----------------|--------------------------------------------------------------------------------------------------|
+| `officeCode`       | varchar(10)     | Unique identifier for each office (Primary Key).                                              |
+| `city`             | varchar(50)     | City where the office is located.                                                               |
+| `phone`            | varchar(50)     | Phone number for the office.                                                                     |
+| `addressLine1`     | varchar(50)     | Primary address of the office (e.g., street address).                                           |
+| `addressLine2`     | varchar(50)     | Additional address details (optional).                                                           |
+| `state`            | varchar(50)     | State or province where the office is located (optional).                                      |
+| `country`          | varchar(50)     | Country where the office is located.                                                             |
+| `postalCode`       | varchar(15)     | Postal code of the office's address.                                                             |
+| `territory`        | varchar(10)     | Identifier for the sales territory associated with the office.                                   |
+
+</details>
+
+<details>
+<summary>Expand to see Order Details Table</summary>
+
+### Order Details Table Description
+
+The `orderdetails` table contains information about the individual products included in each order placed by customers. Below is a description of each column in the table:
+
+| Column Name          | Data Type       | Description                                                                                      |
+|----------------------|-----------------|--------------------------------------------------------------------------------------------------|
+| `orderNumber`        | int             | Unique identifier for each order (Foreign Key).                                               |
+| `productCode`        | varchar(15)     | Unique identifier for each product (Foreign Key).                                              |
+| `quantityOrdered`    | int             | Number of units of the product ordered.                                                         |
+| `priceEach`          | decimal(10,2)   | Price per unit of the product at the time of the order.                                        |
+| `orderLineNumber`    | smallint        | Line item number for the product in the order, used to differentiate between multiple products in a single order. |
+
+</details>
+
+<details>
+<summary>Expand to see Orders Table</summary>
+
+### Orders Table Description
+
+The `orders` table contains information about customer orders placed with the Mint Classics Company. Below is a description of each column in the table:
+
+| Column Name       | Data Type       | Description                                                                                      |
+|-------------------|-----------------|--------------------------------------------------------------------------------------------------|
+| `orderNumber`     | int             | Unique identifier for each order (Primary Key).                                               |
+| `orderDate`       | date            | Date when the order was placed.                                                                |
+| `requiredDate`    | date            | Date by which the customer requires the order to be delivered.                                  |
+| `shippedDate`     | date            | Date when the order was shipped (optional).                                                    |
+| `status`          | varchar(15)     | Current status of the order (e.g., Shipped, Cancelled, etc.).                                 |
+| `comments`        | text            | Additional comments or notes related to the order.                                             |
+| `customerNumber`   | int             | Unique identifier for the customer placing the order (Foreign Key).                            |
+
+</details>
+
+<details>
+<summary>Expand to see Payments Table</summary>
+
+### Payments Table Description
+
+The `payments` table contains information about the payments made by customers for their orders at the Mint Classics Company. Below is a description of each column in the table:
+
+| Column Name          | Data Type       | Description                                                                                      |
+|----------------------|-----------------|--------------------------------------------------------------------------------------------------|
+| `customerNumber`     | int             | Unique identifier for each customer (Foreign Key).                                             |
+| `checkNumber`        | varchar(50)     | Unique identifier for the payment (e.g., check number).                                        |
+| `paymentDate`        | date            | Date when the payment was made.                                                                  |
+| `amount`             | decimal(10,2)   | Amount of money paid by the customer.                                                            |
+
+</details>
+
+<details>
+<summary>Expand to see Product Lines Table</summary>
+
+### Product Lines Table Description
+
+The `productlines` table contains information about the different categories of products offered by the Mint Classics Company. Below is a description of each column in the table:
+
+| Column Name        | Data Type       | Description                                                                                      |
+|--------------------|-----------------|--------------------------------------------------------------------------------------------------|
+| `productLine`      | varchar(50)     | Unique identifier for each product line (Primary Key).                                         |
+| `textDescription`  | varchar(4000)   | Textual description of the product line (optional).                                            |
+| `htmlDescription`  | mediumtext      | HTML formatted description of the product line.                                                |
+| `image`            | mediumblob      | Binary data for an image representing the product line.                                        |
+
+</details>
+
+<details>
+<summary>Expand to see Products Table</summary>
+
+### Products Table Description
+
+The `products` table contains information about the various products offered by the Mint Classics Company. Below is a description of each column in the table:
+
+| Column Name          | Data Type       | Description                                                                                      |
+|----------------------|-----------------|--------------------------------------------------------------------------------------------------|
+| `productCode`        | varchar(15)     | Unique identifier for each product (Primary Key).                                              |
+| `productName`        | varchar(70)     | Name of the product.                                                                             |
+| `productLine`        | varchar(50)     | Identifier for the product line to which the product belongs (Foreign Key).                     |
+| `productScale`       | varchar(10)     | Scale of the product (e.g., 1:10, 1:12, etc.).                                                |
+| `productVendor`      | varchar(50)     | Name of the vendor supplying the product.                                                       |
+| `productDescription`  | text            | Detailed description of the product.                                                             |
+| `quantityInStock`    | smallint        | Number of units available in stock.                                                             |
+| `warehouseCode`      | char(1)         | Identifier for the warehouse where the product is stored (Foreign Key).                         |
+| `buyPrice`           | decimal(10,2)   | Purchase price of the product.                                                                   |
+| `MSRP`               | decimal(10,2)   | Manufacturer's suggested retail price for the product.                                          |
+
+</details>
+
+<details>
+<summary>Expand to see Warehouses Table</summary>
+
+### Warehouses Table Description
+
+The `warehouses` table contains information about the storage facilities used by the Mint Classics Company. Below is a description of each column in the table:
+
+| Column Name           | Data Type       | Description                                                                                      |
+|-----------------------|-----------------|--------------------------------------------------------------------------------------------------|
+| `warehouseCode`       | char(1)         | Unique identifier for each warehouse (Primary Key).                                            |
+| `warehouseName`       | varchar(45)     | Name of the warehouse.                                                                           |
+| `warehousePctCap`     | varchar(50)     | Percentage capacity of the warehouse, indicating how full the warehouse is.                     |
+
+</details>
