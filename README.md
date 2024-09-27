@@ -262,7 +262,6 @@ FROM products p
 JOIN warehouses w ON p.warehouseCode = w.warehouseCode
 GROUP BY w.warehouseName, w.warehousePctCap;
 ```
-- Warehouse Stock and Capacity Overview
 
 | Warehouse | Current Stock | Warehouse Capacity (%) | Max Capacity | Available Space | Min Scale | Max Scale |
 |-----------|---------------|------------------------|--------------|------------------|-----------|-----------|
