@@ -190,3 +190,44 @@ The `warehouses` table contains information about the storage facilities used by
 | `warehousePctCap`     | varchar(50)     | Percentage capacity of the warehouse, indicating how full the warehouse is.                     |
 
 </details>
+
+### Step 3: Data Understanding
+
+- #### Warehouse and Inventory Distribution
+
+In this project, it was essential to analyze how the inventory of Mint Company was organized and distributed. One of the key questions we aimed to explore was:
+
+1. **Where are the items stored, and if they were reorganized, could a warehouse be eliminated?**
+
+To address this, we first needed to understand:
+
+- How many warehouses were in operation.
+- Which product lines were stored in each warehouse.
+
+One of the analyses we performed was to understand the relationship between warehouses and product lines. The following SQL query was used to retrieve the data:
+
+```sql
+SELECT 
+    w.warehouseName as "Warehouse",
+    p.productLine as "Product Line"
+FROM 
+    products p
+JOIN 
+    warehouses w ON p.warehouseCode = w.warehouseCode
+GROUP BY 
+    w.warehouseName, p.productLine
+ORDER BY 
+    w.warehouseName, p.productLine;
+```
+- Query Result Table
+
+| Warehouse | Product Line        |
+|-----------|---------------------|
+| East      | Classic Cars        |
+| North     | Motorcycles         |
+| North     | Planes              |
+| South     | Ships               |
+| South     | Trains              |
+| South     | Trucks and Buses    |
+| West      | Vintage Cars        |
+
