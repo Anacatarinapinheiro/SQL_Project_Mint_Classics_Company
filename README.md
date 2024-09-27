@@ -313,3 +313,11 @@ The new distribution would be as follows:
 | East       | 67                   | 219,183       | 327,139      | 107,956          | 01:10     | 01:24     |
 | North      | 72                   | 158,521       | 182,900      | 24,379           | 01:10     | 1:700     |
 | West       | 50                   | 177,427       | 249,760      | 72,333           | 01:18     | 01:50     |
+
+
+- ### Analysis of Inventory Numbers and Sales Figures
+
+In this analysis, we aim to understand how inventory counts relate to sales figures. Specifically, we will investigate whether current inventory levels are adequate for demand and identify any discrepancies where order quantities exceed stock levels. This leads us to the second question proposed:
+
+2. **How are inventory numbers related to sales figures? Do the inventory counts seem appropriate for each item?**
+
