@@ -231,3 +231,87 @@ ORDER BY
 | South     | Trucks and Buses    |
 | West      | Vintage Cars        |
 
+
+We observed that there are four warehouses and seven product lines distributed across them. The **South Warehouse** holds the most product lines.
+
+Now, we want to understand the **inventory quantity** across all warehouses, as well as analyze the **average product size**.
+
+The following SQL query retrieves the total quantity of inventory:
+
+```sql
+SELECT 
+    'Total' AS "Warehouse",
+    SUM(quantityInStock) AS "Total Quantity"
+FROM 
+    products;
+```
+
+| Warehouse | Total Quantity |
+|-----------|----------------|
+| Total     | 555,131        |
+
+```sql
+SELECT w.warehouseName as Warehouse, 
+       SUM(p.quantityInStock) AS "Current Stock", 
+       w.warehousePctCap as "Warehouse Capacity (%)", 
+       ROUND((SUM(p.quantityInStock) * 100.0) / w.warehousePctCap) AS "Max Capacity",
+       ROUND((SUM(p.quantityInStock) * 100.0) / w.warehousePctCap) - SUM(p.quantityInStock) AS "Available Space",
+       CONCAT('1:', MIN(CAST(SUBSTRING_INDEX(p.productScale, ':', -1) AS UNSIGNED))) AS minScale,
+       CONCAT('1:', MAX(CAST(SUBSTRING_INDEX(p.productScale, ':', -1) AS UNSIGNED))) AS maxScale
+FROM products p
+JOIN warehouses w ON p.warehouseCode = w.warehouseCode
+GROUP BY w.warehouseName, w.warehousePctCap;
+```
+- Warehouse Stock and Capacity Overview
+
+| Warehouse | Current Stock | Warehouse Capacity (%) | Max Capacity | Available Space | Min Scale | Max Scale |
+|-----------|---------------|------------------------|--------------|------------------|-----------|-----------|
+| East      | 219,183       | 67                     | 327,139      | 107,956          | 1:10      | 1:24      |
+| North     | 131,688       | 72                     | 182,900      | 51,212           | 1:10      | 1:700     |
+| West      | 124,880       | 50                     | 249,760      | 124,880          | 1:18      | 1:50      |
+| South     | 79,380        | 75                     | 105,840      | 26,460           | 1:12      | 1:700     |
+
+From our analysis, we found that the total number of products in stock is **555,131**. The **East Warehouse** holds the highest number of products; however, the warehouses in the **North** and **South** accommodate larger-scale products.
+
+In response to the initial question, we determined that we could indeed reduce one of the warehouses, considering the available capacity in the other locations. Therefore, it is also important to take into account the scale of the products. Additionally, understanding the distribution by product line will help us reorganize the inventory more effectively.
+
+```sql
+
+SELECT 
+    w.warehouseName,
+    p.productLine,
+    SUM(p.quantityInStock) AS totalQuantity,
+    CONCAT('1:', MIN(CAST(SUBSTRING_INDEX(p.productScale, ':', -1) AS UNSIGNED))) AS minScale,
+	CONCAT('1:', MAX(CAST(SUBSTRING_INDEX(p.productScale, ':', -1) AS UNSIGNED))) AS maxScale
+FROM 
+    products p
+JOIN 
+    warehouses w ON p.warehouseCode = w.warehouseCode
+GROUP BY 
+    w.warehouseName, p.productLine
+ORDER BY 
+    w.warehouseName, p.productLine;
+```
+| Warehouse  | Product Line       | Total Quantity | Min Scale | Max Scale |
+|------------|--------------------|----------------|-----------|-----------|
+| East       | Classic Cars       | 219,183        | 1:10      | 1:24      |
+| North      | Motorcycles        | 69,401         | 1:10      | 1:50      |
+| North      | Planes             | 62,287         | 1:18      | 1:700     |
+| South      | Ships              | 26,833         | 1:18      | 1:700     |
+| South      | Trains             | 16,696         | 1:18      | 1:50      |
+| South      | Trucks and Buses   | 35,851         | 1:12      | 1:50      |
+| West       | Vintage Cars       | 124,880        | 1:18      | 1:50      |
+
+- ### Proposal for Warehouse Optimization
+
+Considering the points discussed, I would propose the dissolution of the **South Warehouse**, with the following product line reallocations:
+- The **Ships** product line will be moved to the **North Warehouse**, as it already accommodates products of equal scale.
+- The **Trains** and **Trucks and Buses** product lines will be moved to the **West Warehouse**.
+
+The new distribution would be as follows:
+
+| Warehouse  | Warehouse % Capacity | Current Stock | Max Capacity | Available Space | Min Scale | Max Scale |
+|------------|----------------------|---------------|--------------|------------------|-----------|-----------|
+| East       | 67                   | 219,183       | 327,139      | 107,956          | 01:10     | 01:24     |
+| North      | 72                   | 158,521       | 182,900      | 24,379           | 01:10     | 1:700     |
+| West       | 50                   | 177,427       | 249,760      | 72,333           | 01:18     | 01:50     |
