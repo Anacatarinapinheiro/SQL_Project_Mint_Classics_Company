@@ -3,9 +3,9 @@
 
 This project is part of my journey to enhance my data analytics skills through Coursera. It is a hands-on SQL-based project where I analyze inventory data for the fictional Mint Classics Company, a retailer of classic cars and vehicles. The goal is to support inventory-related business decisions, focusing on stock optimization and the closure of a storage facility.
 
-## Work Process
+# Work Process
 
-### Step 1: Database Setup
+## Step 1: Database Setup
 
 The first step was to download the [`mintclassicsDB.sql`](./mintclassicsDB.sql) file, which contains the script for creating and populating the Mint Classics relational database. Using the **"Import from Self-Contained File"** option in MySQL Workbench, I imported the script, which created a nine-table relational database.
 
@@ -16,7 +16,7 @@ The following EER diagram illustrates the structure of the Mint Classics databas
 
 <img src="./SupportFiles/EER_MintClassicsDataModel.png" alt="EER Diagram" width="50%">
 
-### Step 2: Explore the Tables
+## Step 2: Explore the Tables
 
 In this step, I explored the various tables within the Mint Classics database to gather insights. Click the arrow below to expand and view the details of each table.
 
@@ -191,9 +191,9 @@ The `warehouses` table contains information about the storage facilities used by
 
 </details>
 
-### Step 3: Data Understanding
+## Step 3: Data Understanding
 
-- #### Warehouse and Inventory Distribution
+- ### Warehouse and Inventory Distribution
 
 In this project, it was essential to analyze how the inventory of Mint Company was organized and distributed. One of the key questions we aimed to explore was:
 
@@ -219,7 +219,6 @@ GROUP BY
 ORDER BY 
     w.warehouseName, p.productLine;
 ```
-- Query Result Table
 
 | Warehouse | Product Line        |
 |-----------|---------------------|
