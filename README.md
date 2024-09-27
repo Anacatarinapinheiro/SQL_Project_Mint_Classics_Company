@@ -311,8 +311,8 @@ The new distribution would be as follows:
 | Warehouse  | Warehouse % Capacity | Current Stock | Max Capacity | Available Space | Min Scale | Max Scale |
 |------------|----------------------|---------------|--------------|------------------|-----------|-----------|
 | East       | 67                   | 219,183       | 327,139      | 107,956          | 01:10     | 01:24     |
-| North      | 72                   | 158,521       | 182,900      | 24,379           | 01:10     | 1:700     |
-| West       | 50                   | 177,427       | 249,760      | 72,333           | 01:18     | 01:50     |
+| North      | 87                   | 158,521       | 182,900      | 24,379           | 01:10     | 1:700     |
+| West       | 71                   | 177,427       | 249,760      | 72,333           | 01:18     | 01:50     |
 
 
 - ### Analysis of Inventory Numbers and Sales Figures
