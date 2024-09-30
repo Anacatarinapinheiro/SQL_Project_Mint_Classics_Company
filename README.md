@@ -300,7 +300,7 @@ ORDER BY
 | South      | Trucks and Buses   | 35,851         | 1:12      | 1:50      |
 | West       | Vintage Cars       | 124,880        | 1:18      | 1:50      |
 
-- ### Proposal for Warehouse Optimization
+#### *Proposal for Warehouse Optimization*
 
 Considering the points discussed, I would propose the dissolution of the **South Warehouse**, with the following product line reallocations:
 - The **Ships** product line will be moved to the **North Warehouse**, as it already accommodates products of equal scale.
@@ -315,9 +315,94 @@ The new distribution would be as follows:
 | West       | 71                   | 177,427       | 249,760      | 72,333           | 01:18     | 01:50     |
 
 
-- ### Analysis of Inventory Numbers and Sales Figures
+- ## Analysis of Inventory Numbers and Sales Figures
 
 In this analysis, we aim to understand how inventory counts relate to sales figures. Specifically, we will investigate whether current inventory levels are adequate for demand and identify any discrepancies where order quantities exceed stock levels. This leads us to the second question proposed:
 
 2. **How are inventory numbers related to sales figures? Do the inventory counts seem appropriate for each item?**
 
+In the following section, I aimed to answer several key questions regarding the products in the database:
+
+- How many different product types exist?
+- Which products are the most expensive in stock?
+- What are the most sought-after products in terms of stock?
+- How do orders align with the available stock?
+
+To begin, I investigated the number of distinct product models in the database using the following query:
+
+```sql
+SELECT COUNT(DISTINCT productCode) AS "Number of Models"
+FROM mintclassics.products;
+```
+| Number of Models |
+|--------------|
+| 110            | 
+
+
+From this query, I discovered that there are **110 different product models** in the system.
+
+Next, I examined the stock levels to determine which products had the highest and lowest quantity in stock:
+
+```sql
+SELECT 
+    productCode, 
+    productName, 
+    quantityInStock
+FROM 
+    mintclassics.products
+ORDER BY 
+    quantityInStock DESC
+LIMIT 1;
+```
+
+| Product Code | Product Name       | Quantity In Stock |
+|--------------|--------------------|-------------------|
+| S12_2823     | 2002 Suzuki XREO    | 9997              |
+| S24_2000     | 1960 BSA Gold Star DBD34    | 15                |
+
+
+From this query, I observed that the product with the largest stock is the 2002 Suzuki XREO, with 9,997 units available. Conversely, the product with the smallest stock is the 1960 BSA Gold Star DBD34, with only 15 units remaining.
+
+I then wanted to understand the products' value based on their unit prices. Using the following query, I identified the most expensive and cheapest products by their purchase price:
+
+```sql
+SELECT 
+    productName, 
+    buyPrice 
+FROM 
+    mintclassics.products
+ORDER BY 
+    buyPrice DESC 
+LIMIT 1;
+```
+| Product Name                        | Buy Price |
+|-------------------------------------|-----------|
+| 1962 LanciaA Delta 16V              | 103.42    |
+| 1958 Chevy Corvette Limited Edition | 15.91     |
+
+The result showed that the most expensive product by unit price is the **1962 Lancia Delta 16V, with a unit purchase price of 103.42**. On the other hand, the cheapest product is the **1958 Chevy Corvette Limited Edition**, with a unit price of 15.91.
+
+To gain further insights, I calculated the total value of the products in stock by multiplying their unit prices by the number of units available. The query used for this is:
+```sql
+SELECT 
+    productName, 
+    buyPrice, 
+    quantityInStock, 
+    (buyPrice * quantityInStock) AS totalValue
+FROM 
+    mintclassics.products
+ORDER BY 
+    totalValue DESC
+LIMIT 5;
+```
+| Product Name                       | Buy Price | Quantity In Stock | Total Value   |
+|------------------------------------|-----------|-------------------|---------------|
+| 1995 Honda Civic                   | 93.89     | 9772              | 917493.08     |
+| 1952 Alpine Renault 1300           | 98.58     | 7305              | 720126.90     |
+| 1962 LanciaA Delta 16V             | 103.42    | 6791              | 702325.22     |
+| 1968 Dodge Charger                  | 75.16     | 9123              | 685684.68     |
+| 1976 Ford Gran Torino               | 73.49     | 9127              | 670743.23     |
+
+
+
+This revealed that, although the **1995 Honda Civic** is not the most expensive product by unit price, it **has the highest accumulated stock value** due to the large quantity available. This insight is crucial for inventory management, as it indicates which product holds the most financial weight in stock.
