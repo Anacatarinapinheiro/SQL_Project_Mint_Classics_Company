@@ -315,11 +315,11 @@ The new distribution would be as follows:
 | West       | 71                   | 177,427       | 249,760      | 72,333           | 01:18     | 01:50     |
 
 
-- ## Analysis of Inventory Numbers and Sales Figures
+- ### Analysis of Inventory Numbers and Sales Figures
 
 In this analysis, we aim to understand how inventory counts relate to sales figures. Specifically, we will investigate whether current inventory levels are adequate for demand and identify any discrepancies where order quantities exceed stock levels. This leads us to the second question proposed:
 
-2. **How are inventory numbers related to sales figures? Do the inventory counts seem appropriate for each item?**
+2. **How are inventory numbers related to sales figures? Do the inventory counts seem appropriate for each item?*
 
 In the following section, I aimed to answer several key questions regarding the products in the database:
 
