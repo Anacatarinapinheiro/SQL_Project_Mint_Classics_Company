@@ -319,7 +319,7 @@ The new distribution would be as follows:
 
 In this analysis, we aim to understand how inventory counts relate to sales figures. Specifically, we will investigate whether current inventory levels are adequate for demand and identify any discrepancies where order quantities exceed stock levels. This leads us to the second question proposed:
 
-2. **How are inventory numbers related to sales figures? Do the inventory counts seem appropriate for each item?*
+2. *How are inventory numbers related to sales figures? Do the inventory counts seem appropriate for each item?*
 
 In the following section, I aimed to answer several key questions regarding the products in the database:
 
@@ -358,6 +358,7 @@ LIMIT 1;
 | Product Code | Product Name       | Quantity In Stock |
 |--------------|--------------------|-------------------|
 | S12_2823     | 2002 Suzuki XREO    | 9997              |
+| ...     | ...    | ...               |
 | S24_2000     | 1960 BSA Gold Star DBD34    | 15                |
 
 
@@ -378,6 +379,7 @@ LIMIT 1;
 | Product Name                        | Buy Price |
 |-------------------------------------|-----------|
 | 1962 LanciaA Delta 16V              | 103.42    |
+| ... | ...     |
 | 1958 Chevy Corvette Limited Edition | 15.91     |
 
 The result showed that the most expensive product by unit price is the **1962 Lancia Delta 16V, with a unit purchase price of 103.42**. On the other hand, the cheapest product is the **1958 Chevy Corvette Limited Edition**, with a unit price of 15.91.
@@ -404,5 +406,60 @@ LIMIT 5;
 | 1976 Ford Gran Torino               | 73.49     | 9127              | 670743.23     |
 
 
-
 This revealed that, although the **1995 Honda Civic** is not the most expensive product by unit price, it **has the highest accumulated stock value** due to the large quantity available. This insight is crucial for inventory management, as it indicates which product holds the most financial weight in stock.
+
+After reviewing the stock, I turned my attention to the orders, aiming to understand which product was the most requested both in terms of units and in terms of popularity across different customers.
+
+```sql
+SELECT p.productCode, p.productName, 
+    COUNT(od.productCode) AS totalOrders,
+    COUNT(DISTINCT o.customerNumber) AS totalCustomers 
+FROM orderdetails od
+JOIN products p ON od.productCode = p.productCode
+JOIN orders o ON od.orderNumber = o.orderNumber
+GROUP BY p.productCode, p.productName
+ORDER BY totalOrders DESC
+LIMIT 3;
+```
+
+| productCode | productName                         | totalOrders | totalCustomers |
+|-------------|-------------------------------------|-------------|----------------|
+| S18_3232    | 1992 Ferrari 360 Spider red         | 53          | 40             |
+| S10_1678    | 1969 Harley Davidson Ultimate Chopper | 28        | 26             |
+| S10_1949    | 1952 Alpine Renault 1300            | 28          | 27             |
+| ...         | ...                                 | ...         | ...            |
+| S18_4933    | 1957 Ford Thunderbird               | 24          | 20             |
+
+```sql
+SELECT p.productCode, p.productName, SUM(od.quantityOrdered) AS totalQuantityOrdered
+FROM orderdetails od
+JOIN products p ON od.productCode = p.productCode
+GROUP BY p.productCode, p.productName
+ORDER BY totalQuantityOrdered desc
+LIMIT 3;
+```
+
+| productCode | productName                         | totalQuantityOrdered |
+|-------------|-------------------------------------|----------------------|
+| S18_3232    | 1992 Ferrari 360 Spider red         | 1808                 |
+| S18_1342    | 1937 Lincoln Berline                | 1111                 |
+| S700_4002   | American Airlines: MD-11S           | 1085                 |
+| ...         | ...                                 | ...                  |
+| S18_4933    | 1957 Ford Thunderbird               | 767                  |
+
+From the data, we can observe that the **1992 Ferrari 360 Spider** was the most ordered product, with *53 total orders* placed by **40 different customers**, demonstrating its popularity across a wide customer base. This model **also had the highest number of units ordered**, with a total of 1,808 units. On the other hand, the **1957 Ford Thunderbird** had the fewest units ordered, with only **767 units**.
+
+It is also important to identify any product that did not receive any orders and has remained in stock.
+
+```sql
+SELECT p.productCode, p.productName
+FROM products p
+LEFT JOIN orderdetails od ON p.productCode = od.productCode
+WHERE od.productCode IS NULL;
+```
+
+| productCode | productName           |
+|-------------|-----------------------|
+| S18_3233    | 1985 Toyota Supra     |
+
+As seen in the data, the **1985 Toyota Supra** *did not register any orders*, indicating it remains unsold in our stock.
