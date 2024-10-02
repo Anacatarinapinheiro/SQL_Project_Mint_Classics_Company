@@ -463,3 +463,67 @@ WHERE od.productCode IS NULL;
 | S18_3233    | 1985 Toyota Supra     |
 
 As seen in the data, the **1985 Toyota Supra** *did not register any orders*, indicating it remains unsold in our stock.
+
+At this stage, it's important to gain a better understanding of our orders. One key point is determining whether the current stock can meet the quantities ordered.
+
+```sql
+SELECT p.productName AS "Product Name", 
+       SUM(od.quantityOrdered) AS "Quantity Ordered",
+       p.quantityInStock AS "Available Stock",
+       CASE 
+           WHEN p.quantityInStock - SUM(od.quantityOrdered) < 0 THEN 'Not enough Stock'
+           ELSE 'OK'
+       END AS "Status"
+FROM mintclassics.orderdetails od
+JOIN mintclassics.products p ON od.productCode = p.productCode
+GROUP BY p.productCode, p.productName, p.quantityInStock;
+```
+| Product Name                               | Quantity Ordered | Available Stock | Situation         |
+|--------------------------------------------|------------------|-----------------|-------------------|
+| 1968 Ford Mustang                          | 933              | 68              | Not enough Stock  |
+| 1911 Ford Town Car                         | 832              | 540             | Not enough Stock  |
+| 1928 Mercedes-Benz SSK                     | 880              | 548             | Not enough Stock  |
+| 1960 BSA Gold Star DBD34                   | 1015             | 15              | Not enough Stock  |
+| 1997 BMW F650 ST                           | 1014             | 178             | Not enough Stock  |
+| 1996 Peterbilt 379 Stake Bed with Outrigger | 988              | 814             | Not enough Stock  |
+| 1928 Ford Phaeton Deluxe                   | 972              | 136             | Not enough Stock  |
+| 2002 Yamaha YZR M1                         | 992              | 600             | Not enough Stock  |
+| The Mayflower                              | 898              | 737             | Not enough Stock  |
+| F/A 18 Hornet 1/72                         | 1047             | 551             | Not enough Stock  |
+| Pont Yacht                                 | 958              | 414             | Not enough Stock  |
+
+
+From this, we can conclude that there are 11 products with insufficient stock to fulfill the registered orders.
+
+Before examining our customers and collaborators, let’s look at the profit generated from these orders. 
+
+```sql
+SELECT 
+    p.productName AS "Product Name",                              
+    SUM(od.quantityOrdered * od.priceEach) AS revenue, 
+    (SUM(od.quantityOrdered * od.priceEach) - SUM(od.quantityOrdered * p.buyPrice)) AS profit,
+    ROUND(( (SUM(od.quantityOrdered * od.priceEach) - SUM(od.quantityOrdered * p.buyPrice)) / SUM(od.quantityOrdered * od.priceEach) ) * 100) AS profit_margin
+FROM orderdetails od                             
+JOIN products p ON od.productCode = p.productCode            
+GROUP BY p.productCode, p.productName, p.buyPrice                
+ORDER BY profit DESC
+LIMIT 10;
+```
+| Product Name                               | Revenue      | Profit        | Profit Margin (%) |
+|--------------------------------------------|--------------|---------------|--------------------|
+| 1992 Ferrari 360 Spider red                | 276839.98    | 135996.78     | 49                 |
+| 1952 Alpine Renault 1300                  | 190017.96    | 95282.58      | 50                 |
+| 2001 Ferrari Enzo                          | 190755.86    | 93349.65      | 49                 |
+| 2003 Harley-Davidson Eagle Drag Bike       | 170686.00    | 81031.30      | 47                 |
+| 1968 Ford Mustang                          | 161531.48    | 72579.26      | 45                 |
+| 1969 Ford Falcon                           | 152543.02    | 72399.77      | 47                 |
+| 1928 Mercedes-Benz SSK                     | 132275.98    | 68423.18      | 52                 |
+| 2002 Suzuki XREO                           | 135767.03    | 67641.47      | 50                 |
+| 1980s Black Hawk Helicopter                | 144959.91    | 64599.11      | 45                 |
+| 1948 Porsche Type 356 Roadster             | 121653.46    | 62725.78      | 52                 |
+
+The **1992 Ferrari 360 Spider red** is the most profitable product, generating a *profit of 135,996.78* with a **profit margin of 49%**. Its high revenue potential makes it a key focus for sales strategies.
+
+Curiosly, when you notice the **1928 Mercedes-Benz SSK**, while having a slightly **higher profit margin of 52%**, faces *stock issues with 880 units ordered but only 548 units available*. This deficit compromises potential profits and customer satisfaction.
+The high demand coupled with low available stock for various products indicates a need for improved inventory management strategies to capitalize on high-margin products.
+
