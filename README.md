@@ -521,6 +521,9 @@ LIMIT 10;
 | 2002 Suzuki XREO                           | 135767.03    | 67641.47      | 50                 |
 | 1980s Black Hawk Helicopter                | 144959.91    | 64599.11      | 45                 |
 | 1948 Porsche Type 356 Roadster             | 121653.46    | 62725.78      | 52                 |
+|...					     | ... 	    | ... 	    | ... 		 |
+| 1939 Chevrolet Deluxe Coupe 		     | 28052.94     | 6904.85       | 25		 |
+
 
 The **1992 Ferrari 360 Spider red** is the most profitable product, generating a *profit of 135,996.78* with a **profit margin of 49%**. Its high revenue potential makes it a key focus for sales strategies.
 
