@@ -527,6 +527,7 @@ LIMIT 10;
 
 The **1992 Ferrari 360 Spider red** is the most profitable product, generating a *profit of 135,996.78* with a **profit margin of 49%**. Its high revenue potential makes it a key focus for sales strategies.
 
-Interestingly, the **1928 Mercedes-Benz SSK**, while having a slightly **higher profit margin of 52%**, faces significant **stock issues**, with *880 units ordered* but only *548 units available*. This deficit compromises potential profits and could impact customer satisfaction if not resolved. At the lower end of profitability, the **1939 Chevrolet Deluxe Coupe** generated the **least profit**, with *6,904.85* in profit and a **profit margin of 25%**.
+Interestingly, Both the **1968 Ford Mustang** and **1928 Mercedes-Benz SSK** stand out due to high demand but face stock shortages. The **Ford Mustang** has **933 units ordered** but only **68 available** in stock, while the **Mercedes-Benz SSK** has **880 units ordered** with only **548 available**. This deficit compromises potential profits and could impact customer satisfaction if not resolved. 
+At the lower end of profitability, the **1939 Chevrolet Deluxe Coupe** generated the **least profit**, with *6,904.85* in profit and a **profit margin of 25%**. This may indicate an opportunity to either improve marketing, reduce costs, or focus efforts on more profitable models.
 The high demand coupled with low available stock for various products indicates a need for improved inventory management strategies to capitalize on high-margin products.
 
