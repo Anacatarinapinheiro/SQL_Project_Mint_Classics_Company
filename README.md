@@ -531,3 +531,46 @@ Interestingly, Both the **1968 Ford Mustang** and **1928 Mercedes-Benz SSK** sta
 At the lower end of profitability, the **1939 Chevrolet Deluxe Coupe** generated the **least profit**, with *6,904.85* in profit and a **profit margin of 25%**. This may indicate an opportunity to either improve marketing, reduce costs, or focus efforts on more profitable models.
 The high demand coupled with low available stock for various products indicates a need for improved inventory management strategies to capitalize on high-margin products.
 
+- Evolution of Orders
+  
+Another interesting aspect to analyze is how orders have varied over time. Our dataset spans from **January 2003 to May 2005**, and we aim to understand the evolution of order volume during this period.
+
+```sql
+SELECT 
+    DATE_FORMAT(orderDate, '%Y-%m') AS "Month", 
+    COUNT(orderNumber) AS "Total Orders"
+FROM 
+    orders
+GROUP BY 
+    DATE_FORMAT(orderDate, '%Y-%m')
+ORDER BY 
+    DATE_FORMAT(orderDate, '%Y-%m');
+```
+
+
+| Month     | 2003-01 | 2003-02 | 2003-03 | 2003-04 | 2003-05 | 2003-06 | 2003-07 | 2003-08 | 2003-09 | 2003-10 | 2003-11 | 2003-12 | 2004-01 | 2004-02 | 2004-03 | 2004-04 | 2004-05 | 2004-06 | 2004-07 | 2004-08 | 2004-09 | 2004-10 | 2004-11 | 2004-12 | 2005-01 | 2005-02 | 2005-03 | 2005-04 | 2005-05 |
+|-----------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|
+| Total Orders | 5       | 3       | 6       | 7       | 6       | 7       | 7       | 5       | 8       | 18      | 30      | 9       | 8       | 11      | 8       | 10      | 8       | 12      | 11      | 12      | 12      | 13      | 33      | 13      | 12      | 12      | 13      | 12      | 15      |
+
+We observed that significant order volumes began to emerge towards the end of 2003. Notably, the months of November recorded the highest order volumes, with **30 orders in 2003** and **33 orders in 2004**.
+
+It is also interesting to understand how long it takes for a product to be processed, that is, to be shipped.
+
+``` sql
+SELECT 
+    DATE_FORMAT(orderDate, '%Y-%m') AS "Month", 
+    round(AVG(DATEDIFF(shippedDate, orderDate))) AS "Avg Processing Time (Days)"
+FROM orders
+GROUP BY 
+    DATE_FORMAT(orderDate, '%Y-%m')
+ORDER BY 
+    DATE_FORMAT(orderDate, '%Y-%m');
+```
+
+
+| Month     | 2003-01 | 2003-02 | 2003-03 | 2003-04 | 2003-05 | 2003-06 | 2003-07 | 2003-08 | 2003-09 | 2003-10 | 2003-11 | 2003-12 | 2004-01 | 2004-02 | 2004-03 | 2004-04 | 2004-05 | 2004-06 | 2004-07 | 2004-08 | 2004-09 | 2004-10 | 2004-11 | 2004-12 | 2005-01 | 2005-02 | 2005-03 | 2005-04 | 2005-05 |
+|-----------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|
+| Avg Processing Time (Days) | 3       | 2       | 3       | 3       | 4       | 4       | 4       | 3       | 4       | 7       | 4       | 3       | 4       | 3       | 4       | 5       | 4       | 3       | 3       | 4       | 4       | 3       | 4       | 3       | 4       | 2       | 4       | 4       | 4       |
+
+The average processing time fluctuates throughout the dataset, with some months experiencing lower averages and others showing higher averages.
+The data reveals a general consistency in processing times, predominantly remaining **between 2 to 4 days** for most months.
