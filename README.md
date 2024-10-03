@@ -531,7 +531,7 @@ Interestingly, Both the **1968 Ford Mustang** and **1928 Mercedes-Benz SSK** sta
 At the lower end of profitability, the **1939 Chevrolet Deluxe Coupe** generated the **least profit**, with *6,904.85* in profit and a **profit margin of 25%**. This may indicate an opportunity to either improve marketing, reduce costs, or focus efforts on more profitable models.
 The high demand coupled with low available stock for various products indicates a need for improved inventory management strategies to capitalize on high-margin products.
 
-- Evolution of Orders
+- ### Order Volume Evolution
   
 Another interesting aspect to analyze is how orders have varied over time. Our dataset spans from **January 2003 to May 2005**, and we aim to understand the evolution of order volume during this period.
 
@@ -575,4 +575,99 @@ ORDER BY
 The average processing time fluctuates throughout the dataset, with some months experiencing lower averages and others showing higher averages.
 The data reveals a general consistency in processing times, predominantly remaining **between 2 to 4 days** for most months.
 
+- ### Employees and Customers
+
+Moving forward with this analysis, let's take a deeper look at our clients and employees. We'll examine which employees have the most clients associated with them and who generated the highest revenue. Additionally, we'll explore our top-performing clients and determine where they are located.
+
+```sql
+SELECT 
+    e.employeeNumber, e.firstName, e.lastName,
+    COUNT(DISTINCT c.customerNumber) AS "Number of Clients",
+    SUM(od.quantityOrdered * od.priceEach) AS revenue
+FROM employees e
+Join customers c on e.employeeNumber = c.salesRepEmployeeNumber
+join orders o on c.customerNumber = o.customerNumber
+JOIN orderdetails od ON od.orderNumber = o.orderNumber
+GROUP BY e.employeeNumber
+ORDER BY revenue DESC;
+```
+| employeeNumber | firstName  | lastName  | Number of Clients | Revenue       |
+|----------------|------------|-----------|-------------------|---------------|
+| 1370           | Gerard     | Hernandez | 7                 | 1,258,577.81  |
+| 1165           | Leslie     | Jennings  | 6                 | 1,081,530.54  |
+| 1401           | Pamela     | Castillo  | 10                | 868,220.55    |
+| 1501           | Larry      | Bott      | 8                 | 732,096.79    |
+| 1504           | Barry      | Jones     | 9                 | 704,853.91    |
+| 1323           | George     | Vanauf    | 8                 | 669,377.05    |
+| 1612           | Peter      | Marsh     | 5                 | 584,593.76    |
+| 1337           | Loui       | Bondur    | 6                 | 569,485.75    |
+| 1611           | Andy       | Fixter    | 5                 | 562,582.59    |
+| 1216           | Steve      | Patterson | 6                 | 505,875.42    |
+| 1286           | Foon Yue   | Tseng     | 6                 | 488,212.67    |
+| 1621           | Mami       | Nishi     | 5                 | 457,110.07    |
+| 1702           | Martin     | Gerard    | 5                 | 387,477.47    |
+| 1188           | Julie      | Firrelli  | 6                 | 386,663.20    |
+| 1166           | Leslie     | Thompson  | 6                 | 347,533.03    |
+
+From this, we can take away that **Gerard Hernandez** was the employee who generated the highest revenue of **1,258,577.81** *while managing 7 clients*. **Leslie Jennings** followed *closely behind, generating 1,081,530.54 from 6 clients*. **Pamela Castillo**, despite managing the **most clients (10)**, *generated a total revenue of 868,220.55*.  On the other side, the bottom employee in terms of revenue is **Leslie Thompson**, who managed **6 clients and generated 347,533.03**.
+
+```sql
+select count(distinct country) as "Number of Clients" from customers;
+```
+| Number of Clients | 
+|-------------------|
+|       27	    |
+
+Delving into our clients we know that we have clients from **27** different countries, but it would be interesting to know which country holds the most clients, as well as the revenue by countrie.
+
+```sql
+SELECT 
+    c.country, 
+	count(distinct c.customerNumber) as clients,
+    SUM(od.quantityOrdered * od.priceEach) AS revenue
+FROM customers c
+JOIN orders o ON c.customerNumber = o.customerNumber
+join orderdetails od on o.orderNumber = od.orderNumber
+GROUP BY c.country
+ORDER BY revenue DESC
+LIMIT 5;
+```
+
+| Country      | Clients | Revenue       |
+|--------------|---------|---------------|
+| USA          | 35      | 3,273,280.05  |
+| Spain        | 5       | 1,099,389.09  |
+| France       | 12      | 1,007,374.02  |
+| Australia    | 5       | 562,582.59    |
+| New Zealand  | 4       | 476,847.01    |
+| ... 	       | ...     | ...           |
+| Hong Kong    | 1 	 | 45,480.79      |
+
+The **USA leads** significantly with **35 clients and a revenue of 3,273,280.05**, indicating a robust market presence. **Spain and France** generate substantial revenues of *1,099,389.09 and 1,007,374.02* respectively, despite having only 5 and 12 clients. Overall, **the USA is the dominant market**, while Spain and France showcase strong revenue performance with fewer clients. There are clear opportunities for growth in Australia and New Zealand. 
+
+On the other **Hong Kong** has only **1 client**, contributing to its status as the *least profitable country in terms of revenue*, with a total revenue of **45,480.79**, the financial impact from this single client is minimal compared to more profitable countries.
+
+```sql
+SELECT 
+    c.customerName, 
+    c.country, 
+    SUM(od.quantityOrdered * od.priceEach) AS revenue
+FROM customers c
+JOIN orders o ON c.customerNumber = o.customerNumber
+join orderdetails od on o.orderNumber = od.orderNumber
+GROUP BY c.customerName, c.country
+ORDER BY revenue DESC
+LIMIT 5;
+```
+| Customer Name                     | Country | Revenue      |
+|-----------------------------------|---------|--------------|
+| Euro+ Shopping Channel            | Spain   | 820,689.54   |
+| Mini Gifts Distributors Ltd.      | USA     | 591,827.34   |
+| Australian Collectors, Co.        | Australia| 180,585.07   |
+| Muscle Machine Inc                | USA     | 177,913.95   |
+| La Rochelle Gifts                 | France  | 158,573.12   |
+| ... 				    | ...     | ...	     |
+| Boards & Toys Co.		    | USA     | 7,918.60     |
+
+The **Euro+ Shopping Channel** in Spain stands out as the highest revenue generator at **820,689.54**. The USA contributes significantly through **Mini Gifts Distributors Ltd.** and **Muscle Machine Inc.**, generating a combined **769,741.29**. Notably, Australia and France also have clients among the top five, indicating a diverse market. The revenue disparity suggests a need to nurture high-value client relationships. At the end of the list, we encounter **Boards & Toys Co.** from the USA, as the customer with less revenue, generating **7,918.60**.
 
