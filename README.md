@@ -3,6 +3,16 @@
 
 This project is part of my journey to enhance my data analytics skills through Coursera. It is a hands-on SQL-based project where I analyze inventory data for the fictional Mint Classics Company, a retailer of classic cars and vehicles. The goal is to support inventory-related business decisions, focusing on stock optimization and the closure of a storage facility.
 
+## Contest
+- [Step 1: Database Setup](#step-1-database-setup)
+- [Step 2: Explore the Tables](#step-2-explore-the-tables)
+- [Step 3: Data Understanding](#step-3-data-understanding)
+  - [Warehouse and Inventory Distribution](#warehouse-and-inventory-distribution)
+  - [Analysis of Inventory Numbers and Sales Figures](#analysis-of-inventory-numbers-and-sales-figures)
+  - [Order Volume Evolution](#order-volume-evolution)
+  - [Employees and Customers](#employees-and-customers)
+- [Summary of Findings](#summary-of-findings)
+
 # Work Process
 
 ## Step 1: Database Setup
@@ -192,10 +202,6 @@ The `warehouses` table contains information about the storage facilities used by
 </details>
 
 ## Step 3: Data Understanding
-  - [Warehouse and Inventory Distribution](#warehouse-and-inventory-distribution)
-  - [Analysis of Inventory Numbers and Sales Figures](#analysis-of-inventory-numbers-and-sales-figures)
-  - [Order Volume Evolution](#order-volume-evolution)
-  - [Employees and Customers](#employees-and-customers)
 
 - ### Warehouse and Inventory Distribution
 
