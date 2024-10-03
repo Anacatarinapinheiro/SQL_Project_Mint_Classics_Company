@@ -195,7 +195,7 @@ The `warehouses` table contains information about the storage facilities used by
 
 - ### Warehouse and Inventory Distribution
 
-In this project, it was essential to analyze how the inventory of Mint Company was organized and distributed. One of the key questions we aimed to explore was:
+In this project, it was essential to analyze how the inventory of Mint Company was organized and distributed. One of the key questions I aimed to explore was: 
 
 1. **Where are the items stored, and if they were reorganized, could a warehouse be eliminated?**
 
@@ -204,7 +204,7 @@ To address this, we first needed to understand:
 - How many warehouses were in operation.
 - Which product lines were stored in each warehouse.
 
-One of the analyses we performed was to understand the relationship between warehouses and product lines. The following SQL query was used to retrieve the data:
+One of the analyses I performed was to understand the relationship between warehouses and product lines.
 
 ```sql
 SELECT 
@@ -231,7 +231,7 @@ ORDER BY
 | West      | Vintage Cars        |
 
 
-We observed that there are four warehouses and seven product lines distributed across them. The **South Warehouse** holds the most product lines.
+We observed that there are **four warehouses** and **seven product lines** distributed across them. The **South Warehouse** holds the most product lines.
 
 Now, we want to understand the **inventory quantity** across all warehouses, as well as analyze the **average product size**.
 
@@ -269,9 +269,9 @@ GROUP BY w.warehouseName, w.warehousePctCap;
 | West      | 124,880       | 50                     | 249,760      | 124,880          | 1:18      | 1:50      |
 | South     | 79,380        | 75                     | 105,840      | 26,460           | 1:12      | 1:700     |
 
-From our analysis, we found that the total number of products in stock is **555,131**. The **East Warehouse** holds the highest number of products; however, the warehouses in the **North** and **South** accommodate larger-scale products.
+From this analysis, we found that the total number of products in stock is **555,131**. The **East Warehouse** holds the highest number of products; however, the warehouses in the **North** and **South** accommodate larger-scale products.
 
-In response to the initial question, we determined that we could indeed reduce one of the warehouses, considering the available capacity in the other locations. Therefore, it is also important to take into account the scale of the products. Additionally, understanding the distribution by product line will help us reorganize the inventory more effectively.
+In response to the initial question, it possible to determine that we could indeed reduce one of the warehouses, considering the available capacity in the other locations. Therefore, it is also important to take into account the scale of the products. Additionally, understanding the distribution by product line will help us reorganize the inventory more effectively.
 
 ```sql
 
@@ -317,9 +317,10 @@ The new distribution would be as follows:
 
 - ### Analysis of Inventory Numbers and Sales Figures
 
-In this analysis, we aim to understand how inventory counts relate to sales figures. Specifically, we will investigate whether current inventory levels are adequate for demand and identify any discrepancies where order quantities exceed stock levels. This leads us to the second question proposed:
+In this analysis, I aim to understand how inventory counts relate to sales figures. Specifically, we will investigate whether current inventory levels are adequate for demand and identify any discrepancies where order quantities exceed stock levels. This leads to the second and third question proposed:
 
 2. *How are inventory numbers related to sales figures? Do the inventory counts seem appropriate for each item?*
+3. *Are we storing items that are not moving? Are any items candidates for being dropped from the product line?*
 
 In the following section, I aimed to answer several key questions regarding the products in the database:
 
@@ -332,7 +333,7 @@ To begin, I investigated the number of distinct product models in the database u
 
 ```sql
 SELECT COUNT(DISTINCT productCode) AS "Number of Models"
-FROM mintclassics.products;
+FROM products;
 ```
 | Number of Models |
 |--------------|
@@ -349,7 +350,7 @@ SELECT
     productName, 
     quantityInStock
 FROM 
-    mintclassics.products
+    products
 ORDER BY 
     quantityInStock DESC
 LIMIT 1;
@@ -361,20 +362,20 @@ LIMIT 1;
 | ...     | ...    | ...               |
 | S24_2000     | 1960 BSA Gold Star DBD34    | 15                |
 
+From this query, we observe that the product with the largest stock is the **2002 Suzuki XREO**, with *9,997 units available*. This high inventory level may indicate strong demand or successful marketing efforts, positioning it as a staple product. Oppositely, the product with the **smallest stock is the 1960 BSA Gold Star DBD34**, with only **15 units** remaining. Such low inventory might suggest either limited demand or potential supply chain issues.
 
-From this query, I observed that the product with the largest stock is the 2002 Suzuki XREO, with 9,997 units available. Conversely, the product with the smallest stock is the 1960 BSA Gold Star DBD34, with only 15 units remaining.
-
-I then wanted to understand the products' value based on their unit prices. Using the following query, I identified the most expensive and cheapest products by their purchase price:
+To further analyze our inventory, I turned my attention to the products' value based on their unit prices. Understanding the pricing of these products is crucial, as it can provide insights into profitability and market positioning. 
 
 ```sql
 SELECT 
     productName, 
     buyPrice 
 FROM 
-    mintclassics.products
+    products
 ORDER BY 
     buyPrice DESC 
 LIMIT 1;
+
 ```
 | Product Name                        | Buy Price |
 |-------------------------------------|-----------|
@@ -382,9 +383,10 @@ LIMIT 1;
 | ... | ...     |
 | 1958 Chevy Corvette Limited Edition | 15.91     |
 
-The result showed that the most expensive product by unit price is the **1962 Lancia Delta 16V, with a unit purchase price of 103.42**. On the other hand, the cheapest product is the **1958 Chevy Corvette Limited Edition**, with a unit price of 15.91.
+The results showed that the most expensive product by unit price is the **1962 Lancia Delta 16V**, with a unit purchase price of **103.42**. On the other hand, the cheapest product is the **1958 Chevy Corvette Limited Edition**, with a unit price of **15.91**.
 
-To gain further insights, I calculated the total value of the products in stock by multiplying their unit prices by the number of units available. The query used for this is:
+To gain further insights, I calculated the total value of the products in stock by multiplying their unit prices by the number of units available.
+
 ```sql
 SELECT 
     productName, 
@@ -392,11 +394,12 @@ SELECT
     quantityInStock, 
     (buyPrice * quantityInStock) AS totalValue
 FROM 
-    mintclassics.products
+    products
 ORDER BY 
     totalValue DESC
 LIMIT 5;
 ```
+
 | Product Name                       | Buy Price | Quantity In Stock | Total Value   |
 |------------------------------------|-----------|-------------------|---------------|
 | 1995 Honda Civic                   | 93.89     | 9772              | 917493.08     |
@@ -414,7 +417,8 @@ After reviewing the stock, I turned my attention to the orders, aiming to unders
 SELECT p.productCode, p.productName, 
     COUNT(od.productCode) AS totalOrders,
     COUNT(DISTINCT o.customerNumber) AS totalCustomers 
-FROM orderdetails od
+FROM
+    orderdetails od
 JOIN products p ON od.productCode = p.productCode
 JOIN orders o ON od.orderNumber = o.orderNumber
 GROUP BY p.productCode, p.productName
@@ -474,8 +478,9 @@ SELECT p.productName AS "Product Name",
            WHEN p.quantityInStock - SUM(od.quantityOrdered) < 0 THEN 'Not enough Stock'
            ELSE 'OK'
        END AS "Status"
-FROM mintclassics.orderdetails od
-JOIN mintclassics.products p ON od.productCode = p.productCode
+FROM
+       orderdetails od
+JOIN products p ON od.productCode = p.productCode
 GROUP BY p.productCode, p.productName, p.quantityInStock;
 ```
 | Product Name                               | Quantity Ordered | Available Stock | Situation         |
@@ -493,7 +498,7 @@ GROUP BY p.productCode, p.productName, p.quantityInStock;
 | Pont Yacht                                 | 958              | 414             | Not enough Stock  |
 
 
-From this, we can conclude that there are 11 products with insufficient stock to fulfill the registered orders.
+From this, we can conclude that there are **11 products** with **insufficient stock** to fulfill the registered orders.
 
 Before examining our customers and collaborators, let’s look at the profit generated from these orders. 
 
@@ -503,7 +508,8 @@ SELECT
     SUM(od.quantityOrdered * od.priceEach) AS revenue, 
     (SUM(od.quantityOrdered * od.priceEach) - SUM(od.quantityOrdered * p.buyPrice)) AS profit,
     ROUND(( (SUM(od.quantityOrdered * od.priceEach) - SUM(od.quantityOrdered * p.buyPrice)) / SUM(od.quantityOrdered * od.priceEach) ) * 100) AS profit_margin
-FROM orderdetails od                             
+FROM
+    orderdetails od                             
 JOIN products p ON od.productCode = p.productCode            
 GROUP BY p.productCode, p.productName, p.buyPrice                
 ORDER BY profit DESC
@@ -560,7 +566,8 @@ It is also interesting to understand how long it takes for a product to be proce
 SELECT 
     DATE_FORMAT(orderDate, '%Y-%m') AS "Month", 
     round(AVG(DATEDIFF(shippedDate, orderDate))) AS "Avg Processing Time (Days)"
-FROM orders
+FROM
+    orders
 GROUP BY 
     DATE_FORMAT(orderDate, '%Y-%m')
 ORDER BY 
@@ -572,7 +579,7 @@ ORDER BY
 |-----------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|
 | Avg Processing Time (Days) | 3       | 2       | 3       | 3       | 4       | 4       | 4       | 3       | 4       | 7       | 4       | 3       | 4       | 3       | 4       | 5       | 4       | 3       | 3       | 4       | 4       | 3       | 4       | 3       | 4       | 2       | 4       | 4       | 4       |
 
-The average processing time fluctuates throughout the dataset, with some months experiencing lower averages and others showing higher averages.
+The average **processing time fluctuates throughout the dataset**, with some months experiencing lower averages and others showing higher averages.
 The data reveals a general consistency in processing times, predominantly remaining **between 2 to 4 days** for most months.
 
 - ### Employees and Customers
@@ -584,9 +591,10 @@ SELECT
     e.employeeNumber, e.firstName, e.lastName,
     COUNT(DISTINCT c.customerNumber) AS "Number of Clients",
     SUM(od.quantityOrdered * od.priceEach) AS revenue
-FROM employees e
-Join customers c on e.employeeNumber = c.salesRepEmployeeNumber
-join orders o on c.customerNumber = o.customerNumber
+FROM
+    employees e
+JOIN customers c on e.employeeNumber = c.salesRepEmployeeNumber
+JOIN orders o on c.customerNumber = o.customerNumber
 JOIN orderdetails od ON od.orderNumber = o.orderNumber
 GROUP BY e.employeeNumber
 ORDER BY revenue DESC;
@@ -654,7 +662,7 @@ SELECT
     SUM(od.quantityOrdered * od.priceEach) AS revenue
 FROM customers c
 JOIN orders o ON c.customerNumber = o.customerNumber
-join orderdetails od on o.orderNumber = od.orderNumber
+JOIN orderdetails od on o.orderNumber = od.orderNumber
 GROUP BY c.customerName, c.country
 ORDER BY revenue DESC
 LIMIT 5;
@@ -670,4 +678,39 @@ LIMIT 5;
 | Boards & Toys Co.		    | USA     | 7,918.60     |
 
 The **Euro+ Shopping Channel** in Spain stands out as the highest revenue generator at **820,689.54**. The USA contributes significantly through **Mini Gifts Distributors Ltd.** and **Muscle Machine Inc.**, generating a combined **769,741.29**. Notably, Australia and France also have clients among the top five, indicating a diverse market. The revenue disparity suggests a need to nurture high-value client relationships. At the end of the list, we encounter **Boards & Toys Co.** from the USA, as the customer with less revenue, generating **7,918.60**.
+
+# Summary of Findings
+
+## Warehouse and Inventory Analysis
+We currently have **four operational warehouses** with a total inventory of **555,131 items** spread across seven product lines. The South Warehouse manages the most product lines, but inventory utilization differs by location:
+- **East Warehouse**: 67% utilized (**219,183 items**)
+- **North Warehouse**: 72% utilized (**131,688 items**)
+- **West Warehouse**: 50% utilized (**124,880 items**)
+- **South Warehouse**: 75% utilized (**79,380 items**)
+
+## Potential Warehouse Optimization
+I’m considering a proposal to eliminate the **South Warehouse** and redistribute its product lines (Ships, Trains, Trucks, and Buses) to the **North** and **West Warehouses**. After optimization, the utilization rates would look like this:
+- **North**: 87% (after adding Ships)
+- **West**: 71% (after adding Trains, Trucks, and Buses)
+- **East**: 67%   (would remain the same) 
+
+## Inventory and Sales Analysis
+In our analysis, we found **110 distinct product models**, with stock levels varying quite a bit:
+- The **2002 Suzuki XREO** has the highest stock with **9,997 units**, while the **1960 BSA Gold Star DBD34** only has **15 units**.
+- The most expensive item in our inventory, based on purchase cost, is the **1962 Lancia Delta 16V**, bought at **103.42**.
+- The highest profit came from the **1992 Ferrari 360 Spider red**, bringing in **135,996.78** from **1,808 units** sold.
+
+## Order Volume Evolution
+We saw a significant increase in order volumes starting in late **2003**, with peaks in:
+- **November 2003**: 30 orders
+- **November 2004**: 33 orders
+- Our **shipping times** have been fairly consistent, averaging between **2 to 4 days**.
+
+## Customer and Employee Analysis
+When looking at employee performance by revenue and client count:
+- We have clients in **27** countries, with the **USA** leading in customer count at **35** clients.
+- **Gerard Hernandez** came out on top, generating **$1,258,577.81** from **7 clients**.
+
+
+
 
