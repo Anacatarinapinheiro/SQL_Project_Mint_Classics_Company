@@ -192,6 +192,8 @@ The `warehouses` table contains information about the storage facilities used by
 </details>
 
 ## Step 3: Data Understanding
+  - [Warehouse and Inventory Distribution](#warehouse-and-inventory-distribution)
+  - [Analysis of Inventory Numbers and Sales Figures](#analysis-of-inventory-numbers-and-sales-figures)
 
 - ### Warehouse and Inventory Distribution
 
